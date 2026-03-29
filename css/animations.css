@@ -1,0 +1,121 @@
+/* ================================================
+   ECOTRACK KOMIK v3.0 — css/animations.css
+   Isi: semua yang berkaitan dengan animasi:
+        - Kotak canvas visualisasi (.anim-box)
+        - Keyframe animasi panel (popIn)
+        - Elemen dekoratif (zap-deco, zap-bubble)
+        - Animasi idle (float, wiggle, explode)
+   Untuk tambah animasi canvas baru:
+        - Tambah .anim-box di index.html
+        - Buat js/animations/namabaru.js
+        - Styling canvas tambahan taruh di sini
+================================================ */
+
+/* ===== ANIMATION PANEL WRAPPER ===== */
+.anim-panel { margin-bottom: 22px; }
+
+/* Grid 4 kotak animasi canvas */
+.anim-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+}
+
+/* ===== SATU KOTAK ANIMASI ===== */
+.anim-box {
+  background: var(--white);
+  border: 3px solid var(--ink);
+  border-radius: 6px;
+  padding: 12px 8px;
+  text-align: center;
+  box-shadow: var(--shadow);
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.anim-box:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 var(--ink);
+}
+
+/* Label di atas canvas */
+.anim-label {
+  font-family: 'Bangers', cursive;
+  font-size: 0.88rem;
+  letter-spacing: 0.05em;
+  margin-bottom: 8px;
+}
+
+/* Elemen canvas itu sendiri */
+.anim-box canvas {
+  display: block;
+  margin: 0 auto;
+  border: 2px solid var(--ink);
+  border-radius: 4px;
+  max-width: 100%;
+  height: auto;
+}
+
+/* Deskripsi di bawah canvas */
+.anim-desc {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: rgba(26,16,8,0.6);
+  margin-top: 7px;
+  line-height: 1.4;
+  min-height: 28px;   /* Jaga tinggi agar tidak loncat */
+}
+
+/* ===== KEYFRAME: PANEL POP-IN ===== */
+/* Dipakai oleh semua .panel di main.css */
+@keyframes popIn {
+  from { opacity: 0; transform: scale(0.85) rotate(-2deg); }
+  to   { opacity: 1; transform: scale(1)    rotate(0deg); }
+}
+
+/* ===== KEYFRAME: FLOAT (idle earth emoji) ===== */
+/* Sudah didefinisi di components.css,
+   duplikasi dihilangkan — cukup satu definisi */
+
+/* ===== KEYFRAME: ZAP PULSE ===== */
+@keyframes zap-pulse {
+  0%,100% { transform: rotate(5deg) scale(1); }
+  50%     { transform: rotate(5deg) scale(1.1); }
+}
+
+/* ===== DEKORASI: ZAP DECO (teks miring) ===== */
+/* Dipakai inline di judul panel: <span class="zap-deco"> */
+.zap-deco {
+  font-family: 'Bangers', cursive;
+  font-size: clamp(1.1rem, 3vw, 1.9rem);
+  color: var(--red);
+  letter-spacing: 0.05em;
+  text-shadow: 2px 2px 0 var(--ink);
+  display: inline-block;
+  transform: rotate(-8deg);
+  user-select: none;
+  margin-left: 8px;
+}
+
+/* ===== DEKORASI: ZAP BUBBLE (bulat kuning) ===== */
+/* Dipakai di result panel: <span class="zap-bubble">POW!</span> */
+.zap-bubble {
+  display: inline-block;
+  background: var(--yellow);
+  border: 3px solid var(--ink);
+  border-radius: 50%;
+  padding: 7px 13px;
+  font-family: 'Bangers', cursive;
+  font-size: 1.2rem;
+  box-shadow: 4px 4px 0 var(--ink);
+  animation: zap-pulse 1.5s ease-in-out infinite;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 700px) {
+  /* 4 kolom → 2 kolom di tablet/mobile */
+  .anim-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 380px) {
+  /* 2 kolom kecil di hp sangat kecil */
+  .anim-grid { grid-template-columns: 1fr 1fr; }
+  .anim-box canvas { width: 120px; height: 120px; }
+}
