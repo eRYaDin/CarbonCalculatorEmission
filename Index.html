@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EcoTrack KOMIK 💥 — Kalkulator Emisi Karbon Multi-Sektor</title>
+
+  <!-- ======================================================
+       CSS — urutan penting:
+       1. main.css       → layout, grid, header, footer, panel
+       2. components.css → form, tombol, badge, result, history
+       3. animations.css → canvas box, keyframes, dekorasi
+  ====================================================== -->
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/animations.css">
+</head>
+<body>
+
+<!-- =====================================================
+     HEADER
+     Untuk mengubah judul / tagline → edit bagian ini
+===================================================== -->
+<header class="comic-header">
+  <div class="header-badge">🌿 ECOTRACK INDONESIA v3.0 — MULTI SEKTOR 🌿</div>
+  <h1 class="header-title">KALKULATOR<br><span>EMISI</span> KARBON!</h1>
+  <p class="header-subtitle">💨 Transportasi · Pabrik · Rumah Tangga · Digital 💨</p>
+  <div style="margin-top:14px">
+    <div class="speech-bubble">"1 ton baja = 1.85 ton CO₂! Kamu udah tahu belum? 😱"</div>
+  </div>
+</header>
+
+
+<!-- =====================================================
+     SECTOR TABS (navigasi antar sektor)
+     Untuk MENAMBAH sektor baru:
+       1. Tambah <button> baru di sini dengan data-sec="nama"
+       2. Buat <div id="sec-nama"> di dalam #input-panel
+       3. Buat file js/data/nama.js + js/sectors/nama.js
+       4. Daftarkan di js/main.js
+===================================================== -->
+<div class="sector-tab-wrap">
+  <div class="sector-tabs">
+    <button class="stab active" data-sec="transportasi">🚗 Transportasi</button>
+    <button class="stab"        data-sec="industri"    >🏭 Industri</button>
+    <button class="stab"        data-sec="rumah"       >🏠 Rumah Tangga</button>
+    <button class="stab"        data-sec="digital"     >📱 Digital</button>
+    <!-- Tambah tab sektor baru di sini ↓ -->
+  </div>
+</div>
+
+
+<!-- =====================================================
+     MAIN WRAPPER
+===================================================== -->
+<div class="comic-wrap">
+
+  <!-- =================================================
+       PANEL ROW 1 — INPUT + HASIL
+  ================================================= -->
+  <div class="panel-grid">
+
+    <!-- ---------------------------------------------
+         INPUT PANEL
+         Berisi semua form input per sektor.
+         Setiap sektor punya <div id="sec-xxx"> sendiri.
+         Yang tidak aktif diberi class "hidden".
+    --------------------------------------------- -->
+    <div class="panel" id="input-panel">
+      <div class="panel-num" id="panel-num-label">PANEL 01 — TRANSPORTASI</div>
+
+      <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+           SEKTOR: TRANSPORTASI
+           Data kendaraan → js/data/transportasi.js
+           Kalkulasi      → js/sectors/transportasi.js
+           Untuk tambah kendaraan: edit VEHICLES di
+           js/data/transportasi.js, tidak perlu ubah HTML
+      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+      <div id="sec-transportasi" class="sector-section">
+        <div class="panel-title">🚗 PILIH KENDARAANMU!</div>
+
+        <!-- Grid kendaraan dibangun otomatis oleh JS -->
+        <div id="vehicle-grid"></div>
+
+        <!-- Bahan bakar (ditampilkan/sembunyikan oleh JS) -->
+        <div class="form-row mt12" id="fuel-row">
+          <label class="form-label">⛽ Jenis Bahan Bakar</label>
+          <select class="comic-select" id="fuel-select">
+            <!-- Untuk tambah jenis BBM: tambah <option> di sini
+                 DAN tambah entry di FUEL_MULT (js/data/transportasi.js) -->
+            <option value="pertalite"      >Pertalite (RON 90)</option>
+            <option value="pertamax"       >Pertamax (RON 92)</option>
+            <option value="pertamax_turbo" >Pertamax Turbo (RON 98)</option>
+            <option value="premium"        >Premium (RON 88)</option>
+            <option value="solar"          >Solar / B30</option>
+          </select>
+        </div>
+
+        <div class="form-row mt12">
+          <label class="form-label">📏 Jarak Perjalanan</label>
+          <input type="range" class="comic-range" id="dist-slider"
+                 min="1" max="3000" value="50" step="1">
+          <div class="range-display">
+            <span class="range-val" id="dist-val">50 km</span>
+            <span class="range-hint">1 — 3.000 km</span>
+          </div>
+        </div>
+
+        <div class="form-row mt12">
+          <label class="form-label">📅 Frekuensi</label>
+          <!-- Untuk tambah opsi frekuensi: tambah button di sini
+               DAN tambah entry di FREQ_DATA (js/data/transportasi.js) -->
+          <div class="toggle-row" id="freq-group">
+            <button class="toggle-opt active" data-freq="sekali"  >Sekali</button>
+            <button class="toggle-opt"        data-freq="pp"      >PP</button>
+            <button class="toggle-opt"        data-freq="harian"  >Harian</button>
+            <button class="toggle-opt"        data-freq="mingguan">Mingguan</button>
+            <button class="toggle-opt"        data-freq="bulanan" >Bulanan</button>
+          </div>
+        </div>
+
+        <div class="form-row mt12" id="pass-row">
+          <label class="form-label">👥 Jumlah Penumpang</label>
+          <input type="range" class="comic-range" id="pass-slider"
+                 min="1" max="50" value="1" step="1">
+          <div class="range-display">
+            <span class="range-val" id="pass-val">1 orang</span>
+            <span class="range-hint">Makin banyak = makin efisien!</span>
+          </div>
+        </div>
+      </div>
+      <!-- /sec-transportasi -->
+
+
+      <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+           SEKTOR: INDUSTRI
+           Data industri  → js/data/industri.js
+           Kalkulasi      → js/sectors/industri.js
+           Untuk tambah jenis industri: edit INDUSTRIES
+           di js/data/industri.js, tidak perlu ubah HTML
+      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+      <div id="sec-industri" class="sector-section hidden">
+        <div class="panel-title">🏭 AKTIVITAS INDUSTRI!</div>
+
+        <div class="form-row">
+          <label class="form-label">🏗️ Jenis Industri</label>
+          <!-- Grid industri dibangun otomatis oleh JS -->
+          <div id="industry-grid"></div>
+        </div>
+
+        <div class="form-row mt12">
+          <label class="form-label">⚖️ Volume Produksi / Aktivitas</label>
+          <input type="range" class="comic-range" id="industry-slider"
+                 min="1" max="1000" value="10" step="1">
+          <div class="range-display">
+            <span class="range-val" id="industry-val">
+              10 <span id="industry-unit">ton</span>
+            </span>
+            <span class="range-hint" id="industry-hint">per produksi</span>
+          </div>
+        </div>
+
+        <div class="form-row mt12">
+          <label class="form-label">📅 Skala Waktu</label>
+          <select class="comic-select" id="industry-time">
+            <option value="1"  >Per hari ini</option>
+            <option value="22" >Per bulan (22 hari kerja)</option>
+            <option value="264">Per tahun (264 hari kerja)</option>
+          </select>
+        </div>
+      </div>
+      <!-- /sec-industri -->
+
+
+      <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+           SEKTOR: RUMAH TANGGA
+           Data & faktor  → js/data/rumah.js
+           Kalkulasi      → js/sectors/rumah.js
+           Untuk tambah item (misal: pemanas air):
+             1. Tambah slider baru di sini
+             2. Tambah faktor emisi di js/data/rumah.js
+             3. Tambah ke hitungan di js/sectors/rumah.js
+      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+      <div id="sec-rumah" class="sector-section hidden">
+        <div class="panel-title">🏠 KONSUMSI RUMAH TANGGA!</div>
+
+        <div class="form-row">
+          <label class="form-label">💡 Konsumsi Listrik (kWh/bulan)</label>
+          <input type="range" class="comic-range" id="kwh-slider"
+                 min="10" max="2000" value="150" step="10">
+          <div class="range-display">
+            <span class="range-val" id="kwh-val">150 kWh</span>
+            <span class="range-hint">Rata² RI: 150 kWh/bln</span>
+          </div>
+        </div>
+
+        <div class="form-row mt12">
+          <label class="form-label">🍳 Penggunaan LPG (kg/bulan)</label>
+          <input type="range" class="comic-range" id="lpg-slider"
+                 min="0" max="30" value="3" step="0.5">
+          <div class="range-display">
+            <span class="range-val" id="lpg-val">3 kg</span>
+            <span class="range-hint">Rata² RI: 3 kg/bln</span>
+          </div>
+        </div>
+
+        <div class="form-row mt12">
+          <label class="form-label">❄️ Jumlah AC (unit)</label>
+          <input type="range" class="comic-range" id="ac-slider"
+                 min="0" max="10" value="1" step="1">
+          <div class="range-display">
+            <span class="range-val" id="ac-val">1 unit</span>
+            <span class="range-hint">Asumsi pemakaian 8 jam/hari</span>
+          </div>
+        </div>
+
+        <div class="form-row mt12">
+          <label class="form-label">🗑️ Sampah Dihasilkan (kg/hari)</label>
+          <input type="range" class="comic-range" id="waste-slider"
+                 min="0.1" max="10" value="0.7" step="0.1">
+          <div class="range-display">
+            <span class="range-val" id="waste-val">0.7 kg</span>
+            <span class="range-hint">Rata² RI: 0.7 kg/hari</span>
+          </div>
+        </div>
+
+        <div class="form-row mt12">
+          <label class="form-label">📅 Skala Waktu</label>
+          <select class="comic-select" id="rumah-time">
+            <option value="1" >Per bulan</option>
+            <option value="12">Per tahun</option>
+          </select>
+        </div>
+      </div>
+      <!-- /sec-rumah -->
+
+
+      <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+           SEKTOR: DIGITAL
+           Data & faktor  → js/data/digital.js
+           Kalkulasi      → js/sectors/digital.js
+      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+      <div id="sec-digital" class="sector-section hidden">
+        <div class="panel-title">📱 JEJAK DIGITAL!</div>
+
+        <div class="form-row">
+          <label class="form-label">📺 Streaming Video (jam/hari)</label>
+          <input type="range" class="comic-range" id="stream-slider"
+                 min="0" max="12" value="2" step="0.5">
+          <div class="range-display">
+            <span class="range-val" id="stream-val">2 jam</span>
+            <span class="range-hint">Netflix HD ≈ 36g CO₂/jam</span>
+          </div>
+        </div>
+
+        <div class="form-row mt12">
+          <label class="form-label">🎮 Gaming Online (jam/hari)</label>
+          <input type="range" class="comic-range" id="game-slider"
+                 min="0" max="12" value="1" step="0.5">
+          <div class="range-display">
+            <span class="range-val" id="game-val">1 jam</span>
+            <span class="range-hint">Cloud gaming ≈ 60g CO₂/jam</span>
+          </div>
+        </div>
+
+        <div class="form-row mt12">
+          <label class="form-label">📧 Email Terkirim (per hari)</label>
+          <input type="range" class="comic-range" id="email-slider"
+                 min="0" max="500" value="20" step="5">
+          <div class="range-display">
+            <span class="range-val" id="email-val">20 email</span>
+            <span class="range-hint">Email biasa ≈ 4g, attachment ≈ 50g</span>
+          </div>
+        </div>
+
+        <div class="form-row mt12">
+          <label class="form-label">🤖 Penggunaan AI (query/hari)</label>
+          <input type="range" class="comic-range" id="ai-slider"
+                 min="0" max="200" value="10" step="5">
+          <div class="range-display">
+            <span class="range-val" id="ai-val">10 query</span>
+            <span class="range-hint">1 query AI ≈ 0.002–0.01 kWh</span>
+          </div>
+        </div>
+
+        <div class="form-row mt12">
+          <label class="form-label">📅 Skala Waktu</label>
+          <select class="comic-select" id="digital-time">
+            <option value="30" >Per bulan (30 hari)</option>
+            <option value="365">Per tahun (365 hari)</option>
+          </select>
+        </div>
+      </div>
+      <!-- /sec-digital -->
+
+
+      <!-- Tombol aksi -->
+      <button class="btn-zap" id="calc-btn" onclick="calculate()">⚡ HITUNG EMISI!! ⚡</button>
+      <button class="btn-reset-comic" onclick="resetForm()">↺ Reset Semua</button>
+    </div>
+    <!-- /input-panel -->
+
+
+    <!-- ---------------------------------------------
+         RESULT PANEL — diisi oleh js/ui.js
+    --------------------------------------------- -->
+    <div class="panel" id="result-panel">
+      <div class="panel-num">PANEL 02 — HASIL</div>
+      <div class="panel-title">💥 HASIL PERHITUNGAN!</div>
+
+      <div id="result-idle">
+        <div class="result-idle">
+          <div class="big-emoji">🌍</div>
+          <p>ISI DATA DI<br>KIRI DULU, BRO!<br>TERUS KLIK<br>HITUNG!!! 💥</p>
+        </div>
+      </div>
+
+      <div id="result-active" style="display:none">
+        <div class="result-hero">
+          <div class="result-big-num" id="result-num" style="color:#22a849">0.00</div>
+          <div class="result-unit">kg CO₂ equivalent</div>
+          <div id="level-badge" class="level-explosion lvl-green" style="display:none">–</div>
+        </div>
+
+        <div class="stat-row">
+          <div class="stat-box">
+            <span class="sv" id="stat-a">–</span>
+            <div class="sl" id="stat-a-lbl">per km</div>
+          </div>
+          <div class="stat-box">
+            <span class="sv" id="stat-b">–</span>
+            <div class="sl" id="stat-b-lbl">per orang</div>
+          </div>
+          <div class="stat-box">
+            <span class="sv" id="stat-annual">–</span>
+            <div class="sl">est. tahunan (kg)</div>
+          </div>
+        </div>
+
+        <div class="tree-offset">
+          <span class="to-icon">🌳</span>
+          <div>
+            <div class="to-num" id="trees-count">–</div>
+            <div class="to-txt">pohon perlu ditanam setahun<br>untuk menyerap emisi ini</div>
+          </div>
+        </div>
+
+        <div style="text-align:right; margin-top:10px">
+          <span class="zap-bubble">POW!</span>
+        </div>
+      </div>
+    </div>
+    <!-- /result-panel -->
+
+  </div>
+  <!-- /panel-grid row 1 -->
+
+
+  <!-- =================================================
+       PANEL ROW 2 — ANIMASI VISUALISASI
+       Canvas → js/animations/*.js
+       Untuk tambah animasi baru:
+         1. Tambah .anim-box + <canvas> baru di sini
+         2. Buat js/animations/namabaru.js
+         3. Panggil di js/main.js → runAnimations()
+  ================================================= -->
+  <div class="panel panel-full anim-panel" id="anim-panel" style="display:none">
+    <div class="panel-num">PANEL 03 — VISUALISASI</div>
+    <div class="panel-title">🎬 DAMPAK VISUALISASI! <span class="zap-deco">WOW!</span></div>
+
+    <div class="anim-grid">
+      <div class="anim-box">
+        <div class="anim-label">💨 Asap Emisi</div>
+        <canvas id="canvas-smoke" width="160" height="160"></canvas>
+        <div class="anim-desc" id="smoke-desc">–</div>
+      </div>
+      <div class="anim-box">
+        <div class="anim-label">🌍 Kondisi Bumi</div>
+        <canvas id="canvas-earth" width="160" height="160"></canvas>
+        <div class="anim-desc" id="earth-desc">–</div>
+      </div>
+      <div class="anim-box">
+        <div class="anim-label">🌡️ Suhu Bumi</div>
+        <canvas id="canvas-thermo" width="160" height="160"></canvas>
+        <div class="anim-desc" id="thermo-desc">–</div>
+      </div>
+      <div class="anim-box">
+        <div class="anim-label">🌳 Kondisi Hutan</div>
+        <canvas id="canvas-tree" width="160" height="160"></canvas>
+        <div class="anim-desc" id="tree-desc">–</div>
+      </div>
+      <!-- Tambah animasi baru di sini ↓ -->
+    </div>
+  </div>
+
+
+  <!-- =================================================
+       PANEL ROW 3 — PERBANDINGAN
+       Diisi oleh js/ui.js → renderComparison()
+  ================================================= -->
+  <div class="panel panel-full hidden" id="section-compare">
+    <div class="panel-num">PANEL 04 — PERBANDINGAN</div>
+    <div class="panel-title">📊 PERBANDINGAN EMISI! <span class="zap-deco">WOAH!</span></div>
+    <div id="compare-bars"></div>
+  </div>
+
+
+  <!-- =================================================
+       PANEL ROW 4 — DAMPAK + SOLUSI
+       Dampak → js/data/dampak.js
+       Solusi → js/data/solusi.js
+  ================================================= -->
+  <div class="panel-grid hidden" id="section-dampak">
+    <div class="panel">
+      <div class="panel-num">PANEL 05 — DAMPAK</div>
+      <div class="panel-title">⚠️ DAMPAK LINGKUNGAN!</div>
+      <div class="impact-grid" id="impact-grid"></div>
+    </div>
+    <div class="panel">
+      <div class="panel-num">PANEL 06 — SOLUSI</div>
+      <div class="panel-title">💡 CARA MENANGGULANGI!</div>
+      <div class="solution-list" id="solution-dynamic"></div>
+    </div>
+  </div>
+
+
+  <!-- =================================================
+       PANEL ROW 5 — PENJELASAN PERHITUNGAN
+       Diisi oleh js/sectors/[nama].js
+  ================================================= -->
+  <div class="panel panel-full hidden" id="section-formula">
+    <div class="panel-num">PANEL 07 — PERHITUNGAN</div>
+    <div class="panel-title">🔬 PENJELASAN PERHITUNGAN! <span class="zap-deco">SCIENCE!</span></div>
+    <div class="panel-grid" style="margin-bottom:0; gap:16px">
+      <div>
+        <label class="form-label" style="margin-bottom:8px">📟 Formula Step-by-Step:</label>
+        <pre class="formula-scroll" id="formula-code">// Klik HITUNG dulu ya!</pre>
+      </div>
+      <div id="formula-detail" class="explain-block">
+        Tekan HITUNG untuk penjelasan lengkap!
+      </div>
+    </div>
+  </div>
+
+
+  <!-- =================================================
+       PANEL ROW 6 — TIPS GLOBAL
+       Data → js/data/solusi.js (ALL_SOLUTIONS)
+  ================================================= -->
+  <div class="panel panel-full">
+    <div class="panel-num">PANEL 08 — TIPS</div>
+    <div class="panel-title">🚀 CARA KURANGI EMISI! <span class="zap-deco">GO GREEN!</span></div>
+    <div class="solution-list" id="solution-list-full"></div>
+  </div>
+
+
+  <!-- =================================================
+       PANEL ROW 7 — RIWAYAT
+       Dikelola oleh js/ui.js → addHistory()
+  ================================================= -->
+  <div class="panel panel-full">
+    <div class="panel-num">PANEL 09 — RIWAYAT</div>
+    <div class="panel-title">📜 RIWAYAT PERHITUNGAN!</div>
+    <div class="history-list" id="history-list">
+      <div class="h-empty">BELUM ADA DATA, BRO! HITUNG DULU! 💥</div>
+    </div>
+  </div>
+
+</div>
+<!-- /comic-wrap -->
+
+
+<footer class="comic-footer">
+  🌿 ECOTRACK KOMIK v3.0 — DATA: IPCC AR6 · ESDM RI · IEA 2023 · KLHK · FAO 🌿
+  <br>
+  <span style="font-size:0.75rem; opacity:0.6; font-family:'Comic Neue', cursive; font-weight:400">
+    Bersama jaga bumi kita! 🌏
+  </span>
+</footer>
+
+
+<!-- =====================================================
+     JAVASCRIPT — urutan WAJIB:
+     data → sectors → animations → ui → main
+===================================================== -->
+
+<!-- 1. Data (variabel global) -->
+<script src="js/data/transportasi.js"></script>
+<script src="js/data/industri.js"></script>
+<script src="js/data/rumah.js"></script>
+<script src="js/data/digital.js"></script>
+<script src="js/data/dampak.js"></script>
+<script src="js/data/solusi.js"></script>
+
+<!-- 2. Sektor (kalkulasi + render formula) -->
+<script src="js/sectors/transportasi.js"></script>
+<script src="js/sectors/industri.js"></script>
+<script src="js/sectors/rumah.js"></script>
+<script src="js/sectors/digital.js"></script>
+
+<!-- 3. Animasi canvas -->
+<script src="js/animations/smoke.js"></script>
+<script src="js/animations/earth.js"></script>
+<script src="js/animations/thermometer.js"></script>
+<script src="js/animations/tree.js"></script>
+
+<!-- 4. UI renderer -->
+<script src="js/ui.js"></script>
+
+<!-- 5. Main — HARUS PALING TERAKHIR -->
+<script src="js/main.js"></script>
+
+</body>
+</html>
