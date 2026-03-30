@@ -99,6 +99,7 @@ function _buildIndustryGrid() {
   let html = '';
   Object.entries(categories).forEach(([cat, items]) => {
     html += `<div class="veh-category" style="margin-top:4px">📂 ${cat}</div>`;
+    html += `<div class="vehicle-grid" style="margin-bottom:8px">`;
     items.forEach(v => {
       const isActive = (v.key === 'semen');
       html += `
@@ -109,6 +110,7 @@ function _buildIndustryGrid() {
           ${v.label}
         </button>`;
     });
+    html += `</div>`;
   });
 
   container.innerHTML = html;
