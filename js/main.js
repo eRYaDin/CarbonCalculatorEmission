@@ -79,6 +79,9 @@ function _buildVehicleGrid() {
     document.querySelectorAll('.veh-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     _updateFuelVisibility();
+
+    // Auto-scroll ke form input (hanya di mobile/tablet)
+    _scrollToForm();
   });
 }
 
@@ -122,6 +125,9 @@ function _buildIndustryGrid() {
     document.querySelectorAll('[data-ikey]').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     _updateIndustryMeta();
+
+    // Auto-scroll ke form input (hanya di mobile/tablet)
+    _scrollToForm();
   });
 
   _updateIndustryMeta();
@@ -424,4 +430,41 @@ function resetForm() {
   if (typeof _earthAnimId  !== 'undefined' && _earthAnimId)  cancelAnimationFrame(_earthAnimId);
   if (typeof _thermoAnimId !== 'undefined' && _thermoAnimId) cancelAnimationFrame(_thermoAnimId);
   if (typeof _treeAnimId   !== 'undefined' && _treeAnimId)   cancelAnimationFrame(_treeAnimId);
+}
+
+// =================== SCROLL HELPERS ===================
+
+// Scroll ke form input setelah pilih kendaraan/industri
+// Hanya aktif di mobile/tablet (< 861px)
+function _scrollToForm() {
+  if (window.innerWidth >= 861) return;
+
+  const sectorEl   = document.getElementById(`sec-${_currentSector}`);
+  if (!sectorEl) return;
+
+  const firstInput = sectorEl.querySelector(
+    'input[type="range"], select, .toggle-row'
+  );
+  const target = firstInput || sectorEl;
+
+  setTimeout(() => {
+    target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, 150);
+}
+
+// Override scrollToResult dari ui.js
+// Desktop: scroll ke anim-panel (result sudah sticky)
+// Mobile: scroll ke result panel
+function scrollToResult() {
+  if (window.innerWidth >= 861) {
+    setTimeout(() => {
+      document.getElementById('anim-panel')
+        ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 200);
+  } else {
+    setTimeout(() => {
+      document.getElementById('result-panel')
+        ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 150);
+  }
 }
