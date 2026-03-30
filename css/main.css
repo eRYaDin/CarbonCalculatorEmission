@@ -209,6 +209,31 @@ body::after {
 /* Panel yang memenuhi seluruh lebar grid */
 .panel-full { grid-column: 1 / -1; }
 
+/* ===== DESKTOP: INPUT SCROLL + RESULT STICKY ===== */
+/* Input panel bisa scroll sendiri, result selalu kelihatan */
+@media (min-width: 861px) {
+  .panel-grid:first-of-type {
+    align-items: start;
+  }
+
+  #input-panel {
+    max-height: calc(100vh - 130px);
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: thin;
+    scrollbar-color: var(--ink) var(--white);
+  }
+  #input-panel::-webkit-scrollbar       { width: 5px; }
+  #input-panel::-webkit-scrollbar-track { background: var(--white); }
+  #input-panel::-webkit-scrollbar-thumb { background: var(--ink); border-radius: 2px; }
+
+  /* Result panel sticky di sisi kanan */
+  #result-panel {
+    position: sticky;
+    top: 68px; /* setinggi tab navbar */
+  }
+}
+
 /* ===== COMIC PANEL ===== */
 .panel {
   background: var(--panel-bg);
