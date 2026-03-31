@@ -157,23 +157,36 @@ function _updateIndustryMeta() {
 function _bindSectorTabs() {
   document.querySelectorAll('.stab').forEach(btn => {
     btn.addEventListener('click', () => {
-      // Update tab aktif
       document.querySelectorAll('.stab').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
-
       _currentSector = btn.dataset.sec;
 
-      // Tampilkan section sektor yang sesuai
-      document.querySelectorAll('.sector-section').forEach(s => s.classList.add('hidden'));
-      document.getElementById(`sec-${_currentSector}`)?.classList.remove('hidden');
+      const isCompare  = (_currentSector === 'perbandingan');
+      const mainWrap   = document.querySelector('.comic-wrap');
+      const cmpWrap    = document.getElementById('compare-mode');
 
-      // Update label panel
-      document.getElementById('panel-num-label').textContent =
-        `PANEL 01 — ${_currentSector.toUpperCase()}`;
+      if (isCompare) {
+        // Tampilkan compare mode, sembunyikan main
+        mainWrap.classList.add('hidden');
+        cmpWrap.classList.remove('hidden');
+        hideResultSections();
+      } else {
+        // Tampilkan main, sembunyikan compare mode
+        mainWrap.classList.remove('hidden');
+        cmpWrap.classList.add('hidden');
 
-      // Reset result saat pindah sektor
-      resetResultPanel();
-      hideResultSections();
+        // Tampilkan section sektor yang sesuai
+        document.querySelectorAll('.sector-section').forEach(s => s.classList.add('hidden'));
+        document.getElementById('sec-' + _currentSector)?.classList.remove('hidden');
+
+        // Update label panel
+        document.getElementById('panel-num-label').textContent =
+          'PANEL 01 — ' + _currentSector.toUpperCase();
+
+        // Reset result
+        resetResultPanel();
+        hideResultSections();
+      }
     });
   });
 }
