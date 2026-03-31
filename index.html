@@ -45,6 +45,7 @@
     <button class="stab"        data-sec="industri"    >🏭 Industri</button>
     <button class="stab"        data-sec="rumah"       >🏠 Rumah Tangga</button>
     <button class="stab"        data-sec="digital"     >📱 Digital</button>
+    <button class="stab stab-compare" data-sec="perbandingan">⚡ Bandingkan!</button>
     <!-- Tambah tab sektor baru di sini ↓ -->
   </div>
 </div>
@@ -295,6 +296,9 @@
 
 
       <!-- Tombol aksi -->
+      <button class="btn-add-compare" id="add-compare-btn" onclick="addToCompare()">
+        📊 + Tambah ke Perbandingan
+      </button>
       <button class="btn-zap" id="calc-btn" onclick="calculate()">⚡ HITUNG EMISI!! ⚡</button>
       <button class="btn-reset-comic" onclick="resetForm()">↺ Reset Semua</button>
     </div>
@@ -470,6 +474,89 @@
 <!-- /comic-wrap -->
 
 
+
+<!-- =====================================================
+     MODE PERBANDINGAN — panel penuh, tersembunyi
+     saat bukan tab perbandingan
+===================================================== -->
+<div id="compare-mode" class="comic-wrap hidden" style="padding-top:0">
+  <div class="panel panel-full" style="margin-bottom:22px">
+    <div class="panel-num">⚡ COMPARE MODE</div>
+    <div class="panel-title">⚡ MODE PERBANDINGAN EMISI! <span class="zap-deco">VS!</span></div>
+    <p style="font-size:0.85rem; color:rgba(26,16,8,0.6); margin-bottom:16px; font-weight:700">
+      Bandingkan hingga 3 skenario berbeda — lintas sektor! Motor vs KRL, Rumah vs Pabrik, dll.
+    </p>
+
+    <!-- SLOT SKENARIO -->
+    <div class="compare-slots" id="compare-slots">
+      <!-- Slot 1 -->
+      <div class="cmp-slot" id="cmp-slot-0">
+        <div class="cmp-slot-header">
+          <span class="cmp-slot-num">1</span>
+          <span class="cmp-slot-title" id="cmp-title-0">Skenario A</span>
+          <button class="cmp-slot-clear" onclick="clearSlot(0)" title="Hapus">✕</button>
+        </div>
+        <div class="cmp-slot-body" id="cmp-body-0">
+          <div class="cmp-empty-state">
+            <div class="cmp-empty-icon">📋</div>
+            <p>Pilih sektor & isi data,<br>lalu klik <strong>"+ Tambah ke Perbandingan"</strong></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slot 2 -->
+      <div class="cmp-slot" id="cmp-slot-1">
+        <div class="cmp-slot-header">
+          <span class="cmp-slot-num" style="background:var(--blue)">2</span>
+          <span class="cmp-slot-title" id="cmp-title-1">Skenario B</span>
+          <button class="cmp-slot-clear" onclick="clearSlot(1)" title="Hapus">✕</button>
+        </div>
+        <div class="cmp-slot-body" id="cmp-body-1">
+          <div class="cmp-empty-state">
+            <div class="cmp-empty-icon">📋</div>
+            <p>Pilih sektor & isi data,<br>lalu klik <strong>"+ Tambah ke Perbandingan"</strong></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slot 3 -->
+      <div class="cmp-slot" id="cmp-slot-2">
+        <div class="cmp-slot-header">
+          <span class="cmp-slot-num" style="background:var(--purple)">3</span>
+          <span class="cmp-slot-title" id="cmp-title-2">Skenario C</span>
+          <button class="cmp-slot-clear" onclick="clearSlot(2)" title="Hapus">✕</button>
+        </div>
+        <div class="cmp-slot-body" id="cmp-body-2">
+          <div class="cmp-empty-state">
+            <div class="cmp-empty-icon">📋</div>
+            <p>Pilih sektor & isi data,<br>lalu klik <strong>"+ Tambah ke Perbandingan"</strong></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- HASIL PERBANDINGAN -->
+    <div id="compare-result" class="hidden" style="margin-top:22px">
+      <div class="panel-title" style="margin-bottom:14px">📊 HASIL PERBANDINGAN!</div>
+
+      <!-- Bar chart perbandingan -->
+      <div id="compare-chart" style="margin-bottom:20px"></div>
+
+      <!-- Ringkasan pemenang -->
+      <div id="compare-winner"></div>
+
+      <!-- Tabel detail -->
+      <div id="compare-table" style="margin-top:16px"></div>
+    </div>
+
+    <!-- Tombol reset semua slot -->
+    <button class="btn-reset-comic" style="margin-top:16px" onclick="resetAllSlots()">
+      ↺ Reset Semua Skenario
+    </button>
+  </div>
+</div>
+<!-- /compare-mode -->
+
 <footer class="comic-footer">
   🌿 ECOTRACK KOMIK v3.0 — DATA: IPCC AR6 · ESDM RI · IEA 2023 · KLHK · FAO 🌿
   <br>
@@ -506,6 +593,9 @@
 
 <!-- 4. UI renderer -->
 <script src="js/ui.js"></script>
+
+<!-- 5b. Mode Perbandingan -->
+<script src="js/compare.js"></script>
 
 <!-- 5. Main — HARUS PALING TERAKHIR -->
 <script src="js/main.js"></script>
