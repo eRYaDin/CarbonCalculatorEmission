@@ -881,7 +881,7 @@
   .info-team-grid { grid-template-columns: 1fr; }
 }
 
-.team-card {
+.team-card {    
   background: var(--white);
   border: var(--border-thick);
   border-radius: 8px;
