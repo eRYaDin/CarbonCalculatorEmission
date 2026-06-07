@@ -162,18 +162,45 @@ function _bindSectorTabs() {
       _currentSector = btn.dataset.sec;
 
       const isCompare  = (_currentSector === 'perbandingan');
+      const isInfo     = (_currentSector === 'info');
       const mainWrap   = document.querySelector('.comic-wrap');
       const cmpWrap    = document.getElementById('compare-mode');
+      const infoWrap   = document.getElementById('section-info');
+      const panelGrid  = document.querySelector('.panel-grid');
 
       if (isCompare) {
         // Tampilkan compare mode, sembunyikan main
         mainWrap.classList.add('hidden');
         cmpWrap.classList.remove('hidden');
         hideResultSections();
-      } else {
+      } else if (isInfo) {
         // Tampilkan main, sembunyikan compare mode
         mainWrap.classList.remove('hidden');
         cmpWrap.classList.add('hidden');
+        
+        // Sembunyikan panel-grid utama, tampilkan info
+        panelGrid.classList.add('hidden');
+        infoWrap?.classList.remove('hidden');
+        
+        // Sembunyikan panel tips global & riwayat
+        document.querySelectorAll('.comic-wrap > .panel').forEach(p => {
+          if (p.id !== 'section-info') p.classList.add('hidden');
+        });
+        
+        hideResultSections();
+      } else {
+        // Tampilkan main, sembunyikan compare mode & info
+        mainWrap.classList.remove('hidden');
+        cmpWrap.classList.add('hidden');
+        panelGrid.classList.remove('hidden');
+        infoWrap?.classList.add('hidden');
+
+        // Tampilkan kembali panel default (Tips dan Riwayat)
+        document.querySelectorAll('.comic-wrap > .panel').forEach(p => {
+          if (p.id !== 'section-info' && p.id !== 'anim-panel' && p.id !== 'section-compare' && p.id !== 'section-dampak' && p.id !== 'section-formula') {
+            p.classList.remove('hidden');
+          }
+        });
 
         // Tampilkan section sektor yang sesuai
         document.querySelectorAll('.sector-section').forEach(s => s.classList.add('hidden'));
