@@ -964,3 +964,192 @@
   line-height: 1.4;
 }
 
+/* ===== EXPAND / COLLAPSE CARDS ===== */
+
+/* Container expand — tersembunyi secara default */
+.expand-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+              opacity 0.3s ease;
+  opacity: 0;
+}
+
+/* State terbuka */
+.expand-content.expand-open {
+  max-height: 800px;
+  opacity: 1;
+}
+
+/* Inner content dengan padding & border */
+.expand-inner {
+  margin-top: 12px;
+  padding: 14px 16px;
+  background: rgba(26,16,8,0.03);
+  border: 2px dashed rgba(26,16,8,0.15);
+  border-radius: 6px;
+  font-size: 0.8rem;
+  line-height: 1.7;
+  color: rgba(26,16,8,0.75);
+}
+.expand-inner h4 {
+  font-family: 'Bangers', cursive;
+  font-size: 0.9rem;
+  letter-spacing: 0.04em;
+  margin-bottom: 5px;
+  margin-top: 10px;
+  color: var(--ink);
+  border-bottom: 2px solid rgba(26,16,8,0.1);
+  padding-bottom: 3px;
+}
+.expand-inner h4:first-child {
+  margin-top: 0;
+}
+.expand-inner p {
+  font-size: 0.8rem;
+  line-height: 1.65;
+  color: rgba(26,16,8,0.7);
+  margin-bottom: 6px;
+}
+.expand-inner strong {
+  color: var(--ink);
+  font-size: inherit;
+  display: inline;
+}
+
+/* Tombol "Baca Selengkapnya" */
+.btn-expand {
+  display: block;
+  width: 100%;
+  padding: 7px 12px;
+  margin-top: 10px;
+  background: rgba(26,16,8,0.06);
+  border: 2px solid rgba(26,16,8,0.15);
+  border-radius: 4px;
+  font-family: 'Comic Neue', cursive;
+  font-weight: 700;
+  font-size: 0.75rem;
+  color: rgba(26,16,8,0.55);
+  cursor: pointer;
+  transition: all 0.15s;
+  text-align: center;
+  letter-spacing: 0.03em;
+}
+.btn-expand:hover {
+  background: var(--yellow);
+  color: var(--ink);
+  border-color: var(--ink);
+  transform: translate(-1px, -1px);
+  box-shadow: 2px 2px 0 var(--ink);
+}
+.btn-expand-active {
+  background: var(--ink) !important;
+  color: var(--yellow) !important;
+  border-color: var(--ink) !important;
+}
+.btn-expand-active:hover {
+  background: var(--red) !important;
+}
+
+/* ===== PUSTAKA (REFERENCES) PAGE ===== */
+
+.pustaka-group {
+  margin-bottom: 22px;
+}
+
+.pustaka-sector-label {
+  display: inline-block;
+  font-family: 'Bangers', cursive;
+  font-size: 1.1rem;
+  letter-spacing: 0.08em;
+  padding: 5px 18px;
+  border: 3px solid var(--ink);
+  box-shadow: var(--shadow);
+  margin-bottom: 12px;
+  color: var(--white);
+  text-shadow: 1px 1px 0 rgba(0,0,0,0.2);
+}
+
+.pustaka-list {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.pustaka-item {
+  background: var(--white);
+  border: 3px solid var(--ink);
+  border-radius: 6px;
+  padding: 13px 15px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  box-shadow: var(--shadow);
+  transition: all 0.15s;
+  animation: slideIn 0.3s ease both;
+}
+.pustaka-item:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 5px 5px 0 var(--ink);
+}
+
+.pustaka-num {
+  font-family: 'Bangers', cursive;
+  font-size: 1.1rem;
+  background: var(--ink);
+  color: var(--yellow);
+  border: 2px solid var(--ink);
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.pustaka-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.pustaka-nama {
+  font-family: 'Bangers', cursive;
+  font-size: 0.93rem;
+  letter-spacing: 0.03em;
+  display: block;
+  margin-bottom: 3px;
+  color: var(--ink);
+}
+
+.pustaka-desc {
+  font-size: 0.78rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: rgba(26,16,8,0.6);
+  margin-bottom: 6px;
+}
+
+.pustaka-link {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--blue);
+  text-decoration: none;
+  word-break: break-all;
+  padding: 3px 8px;
+  background: rgba(59,139,255,0.08);
+  border: 1px solid rgba(59,139,255,0.2);
+  border-radius: 4px;
+  transition: all 0.15s;
+}
+.pustaka-link:hover {
+  background: var(--blue);
+  color: var(--white);
+  border-color: var(--blue);
+}
+.pustaka-offline {
+  color: rgba(26,16,8,0.4);
+  background: rgba(26,16,8,0.04);
+  border-color: rgba(26,16,8,0.1);
+}
