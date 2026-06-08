@@ -49,6 +49,7 @@
       <button class="stab" data-sec="digital">📱 Digital</button>
       <button class="stab stab-compare" data-sec="perbandingan">⚡ Bandingkan!</button>
       <button class="stab" data-sec="info">📖 Info Proyek</button>
+      <button class="stab" data-sec="pustaka">📚 Pustaka</button>
       <!-- Tambah tab sektor baru di sini ↓ -->
     </div>
   </div>
@@ -512,7 +513,6 @@
           </div>
         </div>
       </div>
-    </div>
 
       <!-- Profil Anggota Kelompok 6 -->
       <div class="info-team-title">👥 TIM KREATIF KELOMPOK 6</div>
@@ -554,6 +554,22 @@
   </div>
   <!-- /comic-wrap -->
 
+
+  <!-- =====================================================
+     HALAMAN DAFTAR PUSTAKA — panel penuh, tersembunyi
+     saat bukan tab pustaka
+  ===================================================== -->
+  <div id="pustaka-mode" class="comic-wrap hidden" style="padding-top:0">
+    <div class="panel panel-full" style="margin-bottom:22px">
+      <div class="panel-num">📚 DAFTAR PUSTAKA</div>
+      <div class="panel-title">📚 REFERENSI & SUMBER DATA <span class="zap-deco">SCIENCE!</span></div>
+      <p style="font-size:0.85rem; color:rgba(26,16,8,0.6); margin-bottom:16px; font-weight:700">
+        Sumber data ilmiah yang digunakan dalam perhitungan emisi karbon EcoTrack, dikelompokkan berdasarkan sektor.
+      </p>
+      <div id="pustaka-content"></div>
+    </div>
+  </div>
+  <!-- /pustaka-mode -->
 
 
   <!-- =====================================================
@@ -659,6 +675,7 @@
   <script src="js/data/digital.js"></script>
   <script src="js/data/dampak.js"></script>
   <script src="js/data/solusi.js"></script>
+  <script src="js/data/pustaka.js"></script>
 
   <!-- 2. Sektor (kalkulasi + render formula) -->
   <script src="js/sectors/transportasi.js"></script>
@@ -677,6 +694,9 @@
 
   <!-- 5b. Mode Perbandingan -->
   <script src="js/compare.js"></script>
+
+  <!-- 5c. Daftar Pustaka -->
+  <script src="js/pustaka.js"></script>
 
   <!-- 5. Main — HARUS PALING TERAKHIR -->
   <script src="js/main.js"></script>
