@@ -3,9 +3,9 @@
 //  Semua fungsi yang merender data ke DOM:
 //  - updateResultPanel()  → angka utama + badge
 //  - renderComparison()   → bar perbandingan
-//  - renderImpact()       → kartu dampak
-//  - renderSolutions()    → kartu solusi per sektor
-//  - renderAllSolutions() → tips global panel 08
+//  - renderImpact()       → kartu dampak (+ expand)
+//  - renderSolutions()    → kartu solusi per sektor (+ expand)
+//  - renderAllSolutions() → tips global panel 08 (+ expand)
 //  - addHistory()         → riwayat perhitungan
 //  - showResultSections() → tampilkan panel tersembunyi
 //  - hideResultSections() → sembunyikan panel
@@ -20,14 +20,6 @@
 //  updateResultPanel(netKg, annualKg, valA, valB,
 //                   labelA, labelB)
 //  Mengisi semua elemen di result panel
-//
-//  PARAMETER:
-//  - netKg    : total emisi (kg CO₂e)
-//  - annualKg : estimasi tahunan (kg CO₂e)
-//  - valA     : nilai stat kiri (string)
-//  - valB     : nilai stat tengah (string)
-//  - labelA   : label stat kiri
-//  - labelB   : label stat tengah
 // ------------------------------------------------
 function updateResultPanel(netKg, annualKg, valA, valB, labelA, labelB) {
   const level = getLevel(netKg);
@@ -129,20 +121,25 @@ function renderComparison(netKg) {
 
 // ------------------------------------------------
 //  renderImpact(lvlKey)
-//  Mengisi kartu dampak lingkungan
-//
-//  PARAMETER:
-//  - lvlKey : 'low' | 'medium' | 'high'
+//  Mengisi kartu dampak lingkungan dengan expand
 // ------------------------------------------------
 function renderImpact(lvlKey) {
   const impacts = IMPACTS[lvlKey] || IMPACTS.medium;
 
   document.getElementById('impact-grid').innerHTML = impacts
-    .map(imp => `
-      <div class="impact-card ${imp.color}">
+    .map((imp, i) => `
+      <div class="impact-card ${imp.color}" id="impact-card-${i}">
         <span class="ic-icon">${imp.icon}</span>
         <strong>${imp.title}</strong>
         <p>${imp.desc}</p>
+        ${imp.detail ? `
+          <div class="expand-content" id="impact-expand-${i}">
+            <div class="expand-inner">${imp.detail}</div>
+          </div>
+          <button class="btn-expand" onclick="toggleExpand('impact', ${i})" id="impact-btn-${i}">
+            Baca Selengkapnya ▼
+          </button>
+        ` : ''}
       </div>`)
     .join('');
 }
@@ -150,9 +147,6 @@ function renderImpact(lvlKey) {
 // ------------------------------------------------
 //  renderSolutions(sectorKey)
 //  Mengisi kartu solusi dinamis sesuai sektor aktif
-//
-//  PARAMETER:
-//  - sectorKey : 'transportasi'|'industri'|'rumah'|'digital'
 // ------------------------------------------------
 function renderSolutions(sectorKey) {
   const solutionMap = {
@@ -165,7 +159,7 @@ function renderSolutions(sectorKey) {
   const solutions = solutionMap[sectorKey] || SOLUTIONS_TRANSPORT;
 
   document.getElementById('solution-dynamic').innerHTML =
-    solutions.map(s => _solutionHTML(s)).join('');
+    solutions.map((s, i) => _solutionHTML(s, `dynamic-${i}`)).join('');
 }
 
 // ------------------------------------------------
@@ -175,7 +169,41 @@ function renderSolutions(sectorKey) {
 // ------------------------------------------------
 function renderAllSolutions() {
   document.getElementById('solution-list-full').innerHTML =
-    ALL_SOLUTIONS.map(s => _solutionHTML(s)).join('');
+    ALL_SOLUTIONS.map((s, i) => _solutionHTML(s, `global-${i}`)).join('');
+}
+
+// ------------------------------------------------
+//  toggleExpand(type, index)
+//  Toggle expand/collapse kartu dampak atau solusi
+//  Hanya 1 kartu terbuka per grup (accordion)
+// ------------------------------------------------
+function toggleExpand(type, index) {
+  const expandEl = document.getElementById(`${type}-expand-${index}`);
+  const btnEl    = document.getElementById(`${type}-btn-${index}`);
+  if (!expandEl || !btnEl) return;
+
+  const isOpen = expandEl.classList.contains('expand-open');
+
+  // Tutup semua expand yang terbuka dalam grup yang sama
+  document.querySelectorAll(`.expand-content.expand-open`).forEach(el => {
+    if (el.id.startsWith(type)) {
+      el.classList.remove('expand-open');
+      // Update tombol yang sesuai
+      const matchId = el.id.replace('expand', 'btn');
+      const matchBtn = document.getElementById(matchId);
+      if (matchBtn) {
+        matchBtn.textContent = 'Baca Selengkapnya ▼';
+        matchBtn.classList.remove('btn-expand-active');
+      }
+    }
+  });
+
+  // Toggle kartu yang diklik (jika sebelumnya belum terbuka)
+  if (!isOpen) {
+    expandEl.classList.add('expand-open');
+    btnEl.textContent = 'Tutup ▲';
+    btnEl.classList.add('btn-expand-active');
+  }
 }
 
 // ------------------------------------------------
@@ -183,8 +211,6 @@ function renderAllSolutions() {
 //  Menambah entri ke riwayat perhitungan
 // ------------------------------------------------
 function addHistory(sectorLabel, netKg) {
-  // Baca riwayat dari modul-level array di main.js
-  // (diakses via window._calcHistory)
   if (!window._calcHistory) window._calcHistory = [];
 
   const entry = {
@@ -238,13 +264,6 @@ function resetResultPanel() {
 // ------------------------------------------------
 //  animateNumber(id, from, to, duration, decimals)
 //  Animasi counter angka naik/turun secara halus
-//
-//  PARAMETER:
-//  - id       : id elemen DOM
-//  - from     : nilai awal
-//  - to       : nilai target
-//  - duration : durasi ms
-//  - decimals : jumlah desimal
 // ------------------------------------------------
 function animateNumber(id, from, to, duration, decimals) {
   const el    = document.getElementById(id);
@@ -304,8 +323,11 @@ function _renderHistory() {
     </div>`).join('');
 }
 
-// HTML template satu kartu solusi
-function _solutionHTML(s) {
+// HTML template satu kartu solusi (dengan expand)
+function _solutionHTML(s, uniqueId) {
+  const expandId = `sol-expand-${uniqueId}`;
+  const btnId    = `sol-btn-${uniqueId}`;
+
   return `
     <div class="sol-item">
       <div class="sol-num">${s.num}</div>
@@ -313,6 +335,42 @@ function _solutionHTML(s) {
         <strong>${s.icon} ${s.title}</strong>
         <p>${s.desc}</p>
         <div class="sol-reduction">⬇ ${s.reduction}</div>
+        ${s.detail ? `
+          <div class="expand-content" id="${expandId}">
+            <div class="expand-inner">${s.detail}</div>
+          </div>
+          <button class="btn-expand" onclick="toggleExpandSol('${uniqueId}')" id="${btnId}">
+            Baca Selengkapnya ▼
+          </button>
+        ` : ''}
       </div>
     </div>`;
+}
+
+// Toggle expand untuk kartu solusi (id berbasis string)
+function toggleExpandSol(uniqueId) {
+  const expandEl = document.getElementById(`sol-expand-${uniqueId}`);
+  const btnEl    = document.getElementById(`sol-btn-${uniqueId}`);
+  if (!expandEl || !btnEl) return;
+
+  const isOpen = expandEl.classList.contains('expand-open');
+
+  // Tutup semua expand solusi yang terbuka
+  document.querySelectorAll('.expand-content.expand-open').forEach(el => {
+    if (el.id.startsWith('sol-expand-')) {
+      el.classList.remove('expand-open');
+      const matchBtnId = el.id.replace('expand', 'btn');
+      const matchBtn = document.getElementById(matchBtnId);
+      if (matchBtn) {
+        matchBtn.textContent = 'Baca Selengkapnya ▼';
+        matchBtn.classList.remove('btn-expand-active');
+      }
+    }
+  });
+
+  if (!isOpen) {
+    expandEl.classList.add('expand-open');
+    btnEl.textContent = 'Tutup ▲';
+    btnEl.classList.add('btn-expand-active');
+  }
 }
