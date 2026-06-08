@@ -33,6 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
   _bindFreqToggles();
   _updateFuelVisibility();
   renderAllSolutions();   // Dari ui.js — isi Panel 08
+  renderPustaka();        // Dari pustaka.js — isi halaman pustaka
 });
 
 // =================== BUILD GRIDS ===================
@@ -163,20 +164,30 @@ function _bindSectorTabs() {
 
       const isCompare  = (_currentSector === 'perbandingan');
       const isInfo     = (_currentSector === 'info');
+      const isPustaka  = (_currentSector === 'pustaka');
       const mainWrap   = document.querySelector('.comic-wrap');
       const cmpWrap    = document.getElementById('compare-mode');
+      const pustakaWrap = document.getElementById('pustaka-mode');
       const infoWrap   = document.getElementById('section-info');
       const panelGrid  = document.querySelector('.panel-grid');
+
+      // Sembunyikan semua mode khusus dulu
+      cmpWrap.classList.add('hidden');
+      pustakaWrap.classList.add('hidden');
 
       if (isCompare) {
         // Tampilkan compare mode, sembunyikan main
         mainWrap.classList.add('hidden');
         cmpWrap.classList.remove('hidden');
         hideResultSections();
+      } else if (isPustaka) {
+        // Tampilkan pustaka mode, sembunyikan main
+        mainWrap.classList.add('hidden');
+        pustakaWrap.classList.remove('hidden');
+        hideResultSections();
       } else if (isInfo) {
         // Tampilkan main, sembunyikan compare mode
         mainWrap.classList.remove('hidden');
-        cmpWrap.classList.add('hidden');
         
         // Sembunyikan panel-grid utama, tampilkan info
         panelGrid.classList.add('hidden');
@@ -191,7 +202,6 @@ function _bindSectorTabs() {
       } else {
         // Tampilkan main, sembunyikan compare mode & info
         mainWrap.classList.remove('hidden');
-        cmpWrap.classList.add('hidden');
         panelGrid.classList.remove('hidden');
         infoWrap?.classList.add('hidden');
 
